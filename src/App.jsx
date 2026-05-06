@@ -149,14 +149,14 @@ const App = () => {
   const WordDisplay = () => {
     if (words.length === 0 || currentIndex >= words.length) {
       return (
-        <div className="flex flex-col items-center justify-center h-48 animate-in fade-in duration-500">
-          <p className="text-gray-400 font-bold uppercase tracking-widest text-sm mb-4">Finished Section</p>
-          <div className="flex items-center space-x-6">
+        <div className="flex flex-col items-center justify-center h-32 sm:h-48 animate-in fade-in duration-500 w-full px-4">
+          <p className="text-gray-400 font-bold uppercase tracking-widest text-xs sm:text-sm mb-4">Finished Section</p>
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:space-x-6">
              <button onClick={() => {setCurrentIndex(0); setIsPlaying(true);}} className="flex items-center space-x-2 text-gray-500 font-bold hover:text-black">
               <RotateCcw size={18} />
               <span>Retry</span>
             </button>
-            <button onClick={goNextChapter} className="flex items-center space-x-2 text-slate-600 font-bold hover:underline">
+            <button onClick={goNextChapter} className="flex items-center space-x-2 text-slate-600 font-bold hover:underline bg-slate-100 px-4 py-2 rounded-xl sm:bg-transparent sm:px-0 sm:py-0">
               <span>Next Chapter</span>
               <ChevronRight size={20} />
             </button>
@@ -167,8 +167,8 @@ const App = () => {
     const chunk = words.slice(currentIndex, currentIndex + chunkSize).join(' ');
     if (chunkSize > 1) {
       return (
-        <div className="flex justify-center items-center h-48 w-full px-4">
-          <span className="text-4xl sm:text-5xl md:text-7xl font-bold text-gray-800 text-center tracking-tighter leading-tight">
+        <div className="flex justify-center items-center h-32 sm:h-48 w-full px-4">
+          <span className="text-3xl sm:text-5xl md:text-7xl font-bold text-gray-800 text-center tracking-tighter leading-tight max-w-full truncate">
             {chunk}
           </span>
         </div>
@@ -179,14 +179,14 @@ const App = () => {
     const focus = chunk[midPoint];
     const right = chunk.slice(midPoint + 1);
     return (
-      <div className="flex items-center h-48 w-full max-w-4xl mx-auto px-4">
-        <div className="flex-1 text-right text-4xl sm:text-7xl md:text-8xl font-bold text-gray-700 tracking-tighter tabular-nums">
+      <div className="flex items-center justify-center h-32 sm:h-48 w-full max-w-4xl mx-auto px-4 overflow-hidden">
+        <div className="flex-1 text-right text-3xl sm:text-6xl md:text-8xl font-bold text-gray-700 tracking-tighter tabular-nums truncate">
           {left}
         </div>
-        <div className="text-4xl sm:text-7xl md:text-8xl font-bold text-red-500 tracking-tighter">
+        <div className="text-3xl sm:text-6xl md:text-8xl font-bold text-red-500 tracking-tighter shrink-0 mx-0.5">
           {focus}
         </div>
-        <div className="flex-1 text-left text-4xl sm:text-7xl md:text-8xl font-bold text-gray-700 tracking-tighter tabular-nums">
+        <div className="flex-1 text-left text-3xl sm:text-6xl md:text-8xl font-bold text-gray-700 tracking-tighter tabular-nums truncate">
           {right}
         </div>
       </div>
@@ -194,10 +194,18 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#fcfcfc] text-gray-900 font-sans selection:bg-slate-200 flex overflow-hidden">
+    <div className="min-h-screen bg-[#fcfcfc] text-gray-900 font-sans selection:bg-slate-200 flex overflow-hidden relative">
       
+      {/* Mobile Backdrop */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/20 z-30 md:hidden transition-opacity" 
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* PERSISTENT DEDICATED LEFT PANE (LIBRARY) */}
-      <div className={`${isSidebarOpen ? 'w-80 border-r' : 'w-0'} bg-white border-gray-200 transition-all duration-300 ease-in-out flex flex-col h-screen overflow-hidden shrink-0 shadow-sm relative z-20`}>
+      <div className={`fixed md:relative top-0 left-0 h-screen z-40 bg-white border-gray-200 transition-all duration-300 ease-in-out flex flex-col overflow-hidden shrink-0 shadow-2xl md:shadow-sm ${isSidebarOpen ? 'translate-x-0 w-80 border-r' : '-translate-x-full w-80 md:w-0 md:translate-x-0'}`}>
         <div className="p-6 flex flex-col h-full w-80">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
@@ -206,7 +214,7 @@ const App = () => {
               </div>
               <h2 className="font-bold tracking-tight text-slate-800">Library</h2>
             </div>
-            <button onClick={() => setIsSidebarOpen(false)} className="p-1 hover:bg-gray-100 rounded-md lg:hidden">
+            <button onClick={() => setIsSidebarOpen(false)} className="p-1 hover:bg-gray-100 rounded-md md:hidden">
               <X size={20} />
             </button>
           </div>
@@ -249,38 +257,38 @@ const App = () => {
         {!isSidebarOpen && (
           <button 
             onClick={() => setIsSidebarOpen(true)}
-            className="absolute top-6 left-6 z-30 p-3 bg-white border border-gray-200 shadow-xl rounded-xl hover:bg-gray-50 transition-all text-gray-600 active:scale-95"
+            className="absolute top-4 left-4 sm:top-6 sm:left-6 z-30 p-2 sm:p-3 bg-white border border-gray-200 shadow-xl rounded-xl hover:bg-gray-50 transition-all text-gray-600 active:scale-95"
           >
-            <Menu size={24} />
+            <Menu size={20} className="sm:w-6 sm:h-6" />
           </button>
         )}
 
         {!isReadingMode ? (
           /* INPUT / EDITOR MODE */
-          <div className="flex-1 flex flex-col max-w-5xl mx-auto w-full px-8 py-10">
-            <div className="mb-8 flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="p-2.5 bg-black text-white rounded-xl shadow-lg">
-                  <Type size={24} />
+          <div className="flex-1 flex flex-col max-w-5xl mx-auto w-full px-4 sm:px-8 py-6 sm:py-10">
+            <div className="mb-6 sm:mb-8 flex items-center justify-between">
+              <div className="flex items-center space-x-3 ml-12 sm:ml-0">
+                <div className="p-2 sm:p-2.5 bg-black text-white rounded-xl shadow-lg">
+                  <Type className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold tracking-tight">Flow Reader</h1>
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-0.5">Professional Speed Trainer</p>
+                  <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Flow Reader</h1>
+                  <p className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-0.5">Professional Speed Trainer</p>
                 </div>
               </div>
             </div>
             
             <div className="flex-1 relative flex flex-col">
               <textarea
-                className="flex-1 w-full p-10 text-xl bg-white border border-gray-200 rounded-[32px] shadow-sm focus:ring-4 focus:ring-slate-500/10 focus:border-slate-500 outline-none resize-none transition-all placeholder:text-gray-300 leading-relaxed font-serif"
+                className="flex-1 w-full p-6 sm:p-10 text-lg sm:text-xl bg-white border border-gray-200 rounded-2xl sm:rounded-[32px] shadow-sm focus:ring-4 focus:ring-slate-500/10 focus:border-slate-500 outline-none resize-none transition-all placeholder:text-gray-300 leading-relaxed font-serif pb-16"
                 placeholder="The core text for your speed reading practice will appear here..."
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
               />
-              <div className="absolute bottom-6 left-8 flex items-center space-x-4">
+              <div className="absolute bottom-6 left-6 sm:left-8 flex items-center space-x-4">
                 <div className="flex items-center text-gray-400 space-x-2">
                   <ScrollText size={16} />
-                  <span className="text-xs font-bold uppercase tracking-widest">
+                  <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest">
                     {inputText.trim().split(/\s+/).filter(w => w.length > 0).length} Words
                   </span>
                 </div>
@@ -290,36 +298,36 @@ const App = () => {
             <button
               onClick={startReading}
               disabled={!inputText.trim()}
-              className="mt-8 w-full py-6 bg-black text-white rounded-2xl font-black hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.98] shadow-2xl flex items-center justify-center space-x-4 text-xl group"
+              className="mt-6 sm:mt-8 w-full py-4 sm:py-6 bg-black text-white rounded-2xl font-black hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.98] shadow-xl sm:shadow-2xl flex items-center justify-center space-x-3 sm:space-x-4 text-lg sm:text-xl group"
             >
               <span>ENTER FOCUS MODE</span>
-              <Play size={24} fill="currentColor" className="group-hover:translate-x-1 transition-transform" />
+              <Play size={20} fill="currentColor" className="group-hover:translate-x-1 transition-transform sm:w-6 sm:h-6" />
             </button>
           </div>
         ) : (
           /* FOCUS / READING MODE */
-          <div className="flex-1 flex flex-col h-full">
+          <div className="flex-1 flex flex-col h-full pt-16 md:pt-0">
             {/* Header Controls */}
-            <div className="p-8 flex justify-between items-center max-w-7xl mx-auto w-full">
+            <div className="p-4 sm:p-8 flex flex-col sm:flex-row gap-4 justify-between items-center max-w-7xl mx-auto w-full">
               <button
                 onClick={() => { setIsPlaying(false); setIsReadingMode(false); }}
-                className="px-4 py-2 text-gray-500 hover:text-black hover:bg-gray-100 rounded-xl transition-all flex items-center space-x-2 font-bold text-sm uppercase tracking-widest"
+                className="px-4 py-2 text-gray-500 hover:text-black hover:bg-gray-100 rounded-xl transition-all flex items-center space-x-2 font-bold text-xs sm:text-sm uppercase tracking-widest w-full sm:w-auto justify-center"
               >
-                <ChevronLeft size={20} />
+                <ChevronLeft size={18} />
                 <span>Exit Focus</span>
               </button>
 
-              <div className="flex items-center space-x-2 bg-white border border-gray-100 px-4 py-2 rounded-xl shadow-sm">
-                <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">{MML_CONTENT[currentContentIndex].category}</span>
-                <span className="text-gray-300">/</span>
-                <span className="text-xs font-bold text-gray-700">{MML_CONTENT[currentContentIndex].title}</span>
+              <div className="flex items-center space-x-2 bg-white border border-gray-100 px-3 py-2 sm:px-4 rounded-xl shadow-sm text-center flex-wrap justify-center w-full sm:w-auto">
+                <span className="text-[9px] sm:text-[10px] font-black text-slate-600 uppercase tracking-widest leading-none">{MML_CONTENT[currentContentIndex].category}</span>
+                <span className="text-gray-300 mx-1">/</span>
+                <span className="text-[11px] sm:text-xs font-bold text-gray-700 truncate max-w-[150px] sm:max-w-xs">{MML_CONTENT[currentContentIndex].title}</span>
               </div>
               
               <button
                 onClick={() => setShowSettings(!showSettings)}
-                className={`p-3 rounded-xl transition-all shadow-sm ${showSettings ? 'text-white bg-slate-600' : 'text-gray-500 bg-white border border-gray-100 hover:bg-gray-50'}`}
+                className={`p-2 sm:p-3 rounded-xl transition-all shadow-sm absolute top-4 right-4 md:static ${showSettings ? 'text-white bg-slate-600' : 'text-gray-500 bg-white border border-gray-100 hover:bg-gray-50'}`}
               >
-                <Settings2 size={24} />
+                <Settings2 size={20} className="sm:w-6 sm:h-6" />
               </button>
             </div>
 
@@ -336,24 +344,24 @@ const App = () => {
 
             {/* Settings HUD */}
             {showSettings && (
-              <div className="fixed bottom-36 left-1/2 -translate-x-1/2 bg-white border border-gray-100 p-8 rounded-[32px] shadow-2xl w-11/12 max-w-md z-50 animate-in fade-in slide-in-from-bottom-10">
-                <div className="space-y-8">
+              <div className="fixed bottom-32 sm:bottom-36 left-1/2 -translate-x-1/2 bg-white border border-gray-100 p-6 sm:p-8 rounded-3xl sm:rounded-[32px] shadow-2xl w-[95%] sm:w-11/12 max-w-md z-50 animate-in fade-in slide-in-from-bottom-10">
+                <div className="space-y-6 sm:space-y-8">
                   <div>
-                    <div className="flex justify-between mb-4">
-                      <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Reading Pace</label>
-                      <span className="text-sm font-black text-slate-600">{wpm} WPM</span>
+                    <div className="flex justify-between mb-3 sm:mb-4">
+                      <label className="text-[10px] sm:text-xs font-black text-gray-400 uppercase tracking-widest">Reading Pace</label>
+                      <span className="text-xs sm:text-sm font-black text-slate-600">{wpm} WPM</span>
                     </div>
                     <input type="range" min="100" max="1000" step="25" value={wpm} onChange={(e) => setWpm(Number(e.target.value))}
-                      className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-slate-600"
+                      className="w-full h-3 sm:h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-slate-600"
                     />
                   </div>
                   <div>
-                    <div className="flex justify-between mb-4">
-                      <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Chunk Size</label>
-                      <span className="text-sm font-black text-slate-600">{chunkSize} {chunkSize === 1 ? 'Word' : 'Words'}</span>
+                    <div className="flex justify-between mb-3 sm:mb-4">
+                      <label className="text-[10px] sm:text-xs font-black text-gray-400 uppercase tracking-widest">Chunk Size</label>
+                      <span className="text-xs sm:text-sm font-black text-slate-600">{chunkSize} {chunkSize === 1 ? 'Word' : 'Words'}</span>
                     </div>
                     <input type="range" min="1" max="3" step="1" value={chunkSize} onChange={(e) => setChunkSize(Number(e.target.value))}
-                      className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-slate-600"
+                      className="w-full h-3 sm:h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-slate-600"
                     />
                   </div>
                 </div>
@@ -361,9 +369,9 @@ const App = () => {
             )}
 
             {/* Bottom Playback Navigation */}
-            <div className="w-full max-w-4xl mx-auto px-8 pb-12">
-              <div className="mb-10 group relative">
-                <div className="h-4 bg-gray-100 rounded-full cursor-pointer relative overflow-hidden transition-all hover:h-6" onClick={(e) => {
+            <div className="w-full max-w-4xl mx-auto px-4 sm:px-8 pb-8 sm:pb-12 mt-auto">
+              <div className="mb-6 sm:mb-10 group relative">
+                <div className="h-6 sm:h-4 bg-gray-100 rounded-full cursor-pointer relative overflow-hidden transition-all hover:h-8 sm:hover:h-6" onClick={(e) => {
                   const rect = e.currentTarget.getBoundingClientRect();
                   const percentage = (e.clientX - rect.left) / rect.width;
                   setCurrentIndex(Math.floor(percentage * words.length));
@@ -372,35 +380,35 @@ const App = () => {
                     style={{ width: `${getProgressPercentage()}%` }}
                   />
                 </div>
-                <div className="flex justify-between mt-3 text-[10px] font-black text-gray-400 uppercase tracking-tighter">
+                <div className="flex justify-between mt-2 sm:mt-3 text-[9px] sm:text-[10px] font-black text-gray-400 uppercase tracking-tighter">
                   <span>Progress: {currentIndex} / {words.length} words</span>
                   <span>{Math.round(getProgressPercentage())}% Completed</span>
                 </div>
               </div>
 
-              <div className="flex justify-center items-center space-x-6 sm:space-x-12">
+              <div className="flex justify-center items-center space-x-4 sm:space-x-12">
                 {/* Previous Chapter */}
-                <button onClick={goPrevChapter} className="p-3 text-gray-300 hover:text-slate-600 transition-all active:scale-90" title="Previous Chapter">
-                  <SkipBack size={24} />
+                <button onClick={goPrevChapter} className="p-2 sm:p-3 text-gray-300 hover:text-slate-600 transition-all active:scale-90" title="Previous Chapter">
+                  <SkipBack size={24} className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
                 
-                {/* PRIMARY CONSOLIDATED BUTTON (Scaled Down) */}
+                {/* PRIMARY CONSOLIDATED BUTTON */}
                 <button 
                   onClick={handleMasterClick}
-                  className="w-16 h-16 sm:w-20 sm:h-20 bg-black text-white rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-black/20"
+                  className="w-16 h-16 sm:w-20 sm:h-20 bg-black text-white rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-black/20 shrink-0"
                 >
                   {currentIndex >= words.length ? (
-                    <RotateCcw size={32} />
+                    <RotateCcw size={28} className="sm:w-8 sm:h-8" />
                   ) : isPlaying ? (
-                    <Pause size={32} fill="currentColor" />
+                    <Pause size={28} fill="currentColor" className="sm:w-8 sm:h-8" />
                   ) : (
-                    <Play size={32} fill="currentColor" className="ml-1" />
+                    <Play size={28} fill="currentColor" className="ml-1 sm:w-8 sm:h-8" />
                   )}
                 </button>
 
                 {/* Next Chapter */}
-                <button onClick={goNextChapter} className="p-3 text-gray-300 hover:text-slate-600 transition-all active:scale-90" title="Next Chapter">
-                  <SkipForward size={24} />
+                <button onClick={goNextChapter} className="p-2 sm:p-3 text-gray-300 hover:text-slate-600 transition-all active:scale-90" title="Next Chapter">
+                  <SkipForward size={24} className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
               </div>
             </div>
